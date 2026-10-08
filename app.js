@@ -14,7 +14,7 @@
   const nowIso = () => new Date().toISOString();
   const uid = () => (globalThis.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'temp-' + Date.now() + '-' + Math.random().toString(36).slice(2);
   const isCadence = f => Object.hasOwn(CADENCES,f);
-  const isDue = w => new Date(w.next_review).getTime() <= Date.now();
+  const isDue = w =>  w.review_step < 7 && new Date(w.next_review).getTime() <= Date.now();
   const accountConfigured = () => {
     const cfg = window.WORDJB_CONFIG || {};
     return typeof cfg.supabaseUrl === 'string' && /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(cfg.supabaseUrl)
@@ -127,8 +127,8 @@
   function updateStats(){
     const d=dueWords();
     $('statTotal').textContent=state.words.length;
-    $('statDue').textContent=d.length;
-    $('statMastered').textContent=state.words.filter(w=>w.score>=70).length;
+    $('statDue').textContent=d.length;  
+    $('statMastered').textContent = state.words.filter(w => w.review_step === 7).length;
     $('statCorrect').textContent=state.words.reduce((n,w)=>n+w.correct_count,0);
     $('allDueCount').textContent=d.length;
     for(const frequency of Object.keys(CADENCES))$(frequency+'DueCount').textContent=d.filter(w=>w.frequency===frequency).length;
@@ -151,7 +151,7 @@
     const duplicate=state.words.find(w=>w.id!==state.editingId&&w.term.toLowerCase()===term.toLowerCase());
     if(duplicate && !window.confirm(`You already have “${term}”. Save another card anyway?`))return;
     const original=state.words.find(w=>w.id===state.editingId);
-    const w=original ? {...original,term,meaning,example,frequency} : normalize({id:uid(),term,meaning,example,frequency,next_review:nowIso(),created_at:nowIso()});
+    const w=original ? {...original,term,meaning,example,frequency} : normalize({id:uid(),term,meaning,example,frequency,next_review:new Date(Date.now()+DAY_MS).toISOString(),created_at:nowIso()});
     if(!w)return;
     setBusy(true);
     try{
@@ -199,7 +199,11 @@
       heading.append(element('strong','',w.term),element('span','frequency-tag',w.frequency));details.append(heading,element('p','',w.meaning));
       if(w.example)details.append(element('small','',w.example));
       const score=element('div','word-score'),bar=element('div','bar'),fill=element('i');fill.style.width=w.score+'%';bar.append(fill);
-      const stats=element('small','',`✓ ${w.correct_count} · ✕ ${w.incorrect_count} · ${isDue(w)?'Due now':'Next '+new Date(w.next_review).toLocaleDateString()}`);
+      const reviewLabel = w.review_step === 7
+        ? 'Mastered'
+        : isDue(w) ? 'Due now' : 'Next ' + new Date(w.next_review).toLocaleDateString();
+      const stats = element('small', '',
+        `✓ ${w.correct_count} · ✕ ${w.incorrect_count} · ${reviewLabel}`);
       const actions=element('div','word-actions');const edit=element('button','tiny-btn','Edit'),del=element('button','tiny-btn','Delete');edit.type='button';del.type='button';
       edit.addEventListener('click',()=>beginEdit(w.id));del.addEventListener('click',()=>deleteWord(w.id));actions.append(edit,del);
       score.append(element('strong','',`${w.score} / 100`),bar,stats,actions);item.append(details,score);list.append(item);
@@ -228,25 +232,78 @@
     $('cardMeaning').classList.remove('hidden');if($('cardExample').textContent)$('cardExample').classList.remove('hidden');
     $('revealHint').textContent='How well did you remember?';$('reviewRatings').classList.remove('hidden');
   }
-  async function rate(correct){
-    if(!state.revealed||!state.activeId||state.busy)return;
-    const old=state.words.find(w=>w.id===state.activeId);if(!old)return;
-    const streak=correct?old.streak+1:0;
-    const base=CADENCES[old.frequency];
-    const days=correct ? Math.min(180,base*Math.pow(2,Math.min(streak-1,5))) : 1;
-    const newWord={...old,score:Math.min(100,Math.max(0,old.score+(correct?12:-10))),correct_count:old.correct_count+(correct?1:0),incorrect_count:old.incorrect_count+(correct?0:1),streak,last_review:nowIso(),next_review:new Date(Date.now()+days*DAY_MS).toISOString()};
-    setBusy(true);
-    try{
-      let saved=newWord;
-      if(state.mode==='cloud'){
-        const {data,error}=await state.client.from('vocab_words').update(toDb(newWord)).eq('id',newWord.id).select('*').single();
-        if(error)throw error;saved=normalize(data);
-      }
-      const prev=state.words;state.words=state.words.map(w=>w.id===newWord.id?saved:w);
-      if(state.mode==='demo'&&!saveDemo()){state.words=prev;return;}
-      state.reviewed++;updateStats();advanceReview();
-    }catch(err){notify('Could not save review: '+errorMessage(err))}finally{setBusy(false)}
+  
+async function rate(correct) {
+  if (!state.revealed || !state.activeId || state.busy) return;
+
+  const old = state.words.find(w => w.id === state.activeId);
+  if (!old) return;
+
+  const previousStep = old.review_step ?? 0;
+
+  // Correct: advance one stage
+  // Incorrect: return to the last checkpoint
+  const reviewStep = correct
+    ? Math.min(7, previousStep + 1)
+    : (previousStep >= 4 ? 4 : 0);
+
+  // Intervals between reviews, in days
+  const intervals = [1, 2, 2, 2, 7, 14, 14];
+
+  // Forgotten words are reviewed again tomorrow
+  const days = correct
+    ? (reviewStep === 7 ? 14 : intervals[reviewStep])
+    : 1;
+
+  const newWord = {
+    ...old,
+    review_step: reviewStep,
+    score: Math.round((reviewStep / 7) * 100),
+    correct_count: old.correct_count + (correct ? 1 : 0),
+    incorrect_count: old.incorrect_count + (correct ? 0 : 1),
+    streak: correct ? old.streak + 1 : 0,
+    last_review: nowIso(),
+    next_review: new Date(Date.now() + days * DAY_MS).toISOString()
+  };
+
+  setBusy(true);
+
+  try {
+    let saved = newWord;
+
+    if (state.mode === 'cloud') {
+      const {data, error} = await state.client
+        .from('vocab_words')
+        .update(toDb(newWord))
+        .eq('id', newWord.id)
+        .select('*')
+        .single();
+
+      if (error) throw error;
+      saved = normalize(data);
+    }
+
+    const prev = state.words;
+    state.words = state.words.map(w =>
+      w.id === newWord.id ? saved : w
+    );
+
+    if (state.mode === 'demo' && !saveDemo()) {
+      state.words = prev;
+      return;
+    }
+
+    state.reviewed++;
+    updateStats();
+    advanceReview();
+
+  } catch (err) {
+    notify('Could not save review: ' + errorMessage(err));
+  } finally {
+    setBusy(false);
   }
+}
+
   function exportBackup(){
     const contents=JSON.stringify({app:'wordjb',version:2,exportedAt:nowIso(),words:state.words,theme:state.theme},null,2);
     const url=URL.createObjectURL(new Blob([contents],{type:'application/json'}));const a=document.createElement('a');a.href=url;
