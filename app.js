@@ -138,7 +138,7 @@
     state.view=view;
     for(const v of ['add','review','library','settings'])$('view'+v.charAt(0).toUpperCase()+v.slice(1)).classList.toggle('hidden',v!==view);
     document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
-    if(view==='review')startReview();if(view==='library')renderLibrary();updateStats();
+    if(view==='review')startReview();if(view==='library')ibrary();updateStats();
     if(view==='add')$('term').focus({preventScroll:true});
   }
   function resetWordForm(){
@@ -185,7 +185,7 @@
       }
       const old=state.words;state.words=state.words.filter(item=>item.id!==id);
       if(state.mode==='demo'&&!saveDemo()){state.words=old;return;}
-      renderLibrary();updateStats();notify('Word removed.');
+      ibrary();updateStats();notify('Word removed.');
     }catch(err){notify('Could not delete: '+errorMessage(err))}
   }
   function element(tag,className,text){const el=document.createElement(tag);if(className)el.className=className;if(text!==undefined)el.textContent=text;return el}
@@ -195,8 +195,9 @@
     const list=$('wordList');list.replaceChildren();
     if(!filtered.length){list.append(element('p','empty-library',state.words.length?'No words match your filters.':'Your word collection is empty. Add a new word to begin!'));return}
     filtered.forEach(w=>{
-      const item=element('article','word-row'),details=element('div','word-details'),heading=element('div','word-name');
-      heading.append(element('strong','',w.term),element('span','frequency-tag',w.frequency));details.append(heading,element('p','',w.meaning));
+      const item=element('article','word-row'),details=element('div','word-details'),heading=element('div','word-name');  
+      heading.append(element('strong', '', w.term));
+      details.append(heading, element('p', '', w.meaning));
       if(w.example)details.append(element('small','',w.example));
       const score=element('div','word-score'),bar=element('div','bar'),fill=element('i');fill.style.width=w.score+'%';bar.append(fill);
       const reviewLabel = w.review_step === 7
@@ -219,12 +220,12 @@
     $('reviewEmpty').classList.toggle('hidden',Boolean(w));$('reviewCardArea').classList.toggle('hidden',!w);
     if(!w){
       $('reviewEmpty').querySelector('h3').textContent=state.reviewed?'Nice work — session complete!':'You’re all caught up!';
-      $('reviewEmpty').querySelector('p').textContent=state.reviewed?'You reviewed '+state.reviewed+' word'+(state.reviewed===1?'':'s')+'. Keep the habit going!':'Words in this schedule will show up when their review date arrives.';
+      $('reviewEmpty').querySelector('p').textContent=state.reviewed?'You reviewed '+state.reviewed+' word'+(state.reviewed===1?'':'s')+'. Keep the habit going!':'Your words will appear here when they are ready for review.';
       return;
     }
     state.revealed=false;$('cardTerm').textContent=w.term;$('cardMeaning').textContent=w.meaning;$('cardExample').textContent=w.example;
-    $('cardMeaning').classList.add('hidden');$('cardExample').classList.add('hidden');$('reviewRatings').classList.add('hidden');
-    $('cardSide').textContent='ENGLISH · '+w.frequency.toUpperCase();$('revealHint').textContent='Tap anywhere to reveal the meaning ↗';
+    $('cardMeaning').classList.add('hidden');$('cardExample').classList.add('hidden');$('reviewRatings').classList.add('hidden');   
+    $('cardSide').textContent = 'ENGLISH';
     $('reviewProgress').textContent='Card '+(state.reviewed+1)+' of '+(state.reviewed+state.queue.length+1);
     $('reviewScore').textContent='Mastery: '+w.score+' / 100';
   }
