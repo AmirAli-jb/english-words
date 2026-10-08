@@ -2,3 +2,30 @@
 @media(max-width:900px){.container{padding:0 22px}.auth-layout{gap:26px}.intro-side h1{font-size:57px}.mini-preview{max-width:300px}.stats{grid-template-columns:repeat(2,1fr)}.dashboard-hero{padding:34px}.workspace{padding:26px}}
 @media(max-width:680px){.container{padding:0 15px}.topbar{height:84px}.brand-mark{width:42px;height:42px;font-size:23px;border-radius:14px}.brand strong{font-size:17px}.brand>div:last-child>span{font-size:10px}.theme-options{padding:4px;gap:0}.theme-btn{padding:8px 7px}.theme-label{display:none}.profile-pill{display:none}.auth-layout{display:flex;flex-direction:column;gap:25px;padding:17px 0 50px}.intro-side{width:100%;text-align:left}.intro-side h1{font-size:50px;letter-spacing:-2.5px;margin:14px 0}.intro-copy{font-size:14px;line-height:1.65;margin-bottom:17px}.benefits{gap:7px;font-size:12px}.benefits span{width:25px;height:25px}.mini-preview{display:none}.auth-card{max-width:none;padding:20px;border-radius:20px}.dashboard-hero{padding:29px 24px;min-height:242px}.dashboard-hero h1{font-size:45px}.hero-art{width:27%}.hero-circle{width:125px;height:125px}.hero-monogram{font-size:47px}.float-star{font-size:26px}.float-words{display:none}.stats{gap:9px;margin:13px 0}.stat{padding:15px;border-radius:14px}.stat strong{font-size:27px;margin:6px 0 3px}.stat-heading{font-size:11px}.main-nav{margin:14px 0;padding:5px;gap:0}.nav-btn{flex-direction:column;gap:3px;padding:9px 2px;font-size:10px}.nav-btn span{font-size:19px}.workspace{padding:22px 18px;border-radius:17px}.section-heading h2{font-size:24px}.section-heading p{font-size:12px}.section-kicker{font-size:9px}.heading-symbol{height:36px;width:36px;font-size:22px}.field-grid{grid-template-columns:1fr;gap:0}.field-grid label{margin-top:12px!important}.form-bottom{flex-direction:column;align-items:stretch}.form-actions .button{flex:1}.library-tools{flex-direction:column}.library-tools select{width:100%}.word-row{align-items:flex-start;flex-wrap:wrap}.word-score{flex:0 0 100%;text-align:left;display:grid;grid-template-columns:90px 1fr auto;gap:9px;align-items:center}.word-score .bar{margin:0}.word-actions{grid-column:1/-1;justify-content:flex-end;margin:0}.setting-row{flex-wrap:wrap}.setting-row .button{margin-left:auto}.review-scopes{gap:6px}.scope-btn{font-size:11px;padding:8px 9px}.scope-btn span{margin-left:2px}.review-ratings{gap:7px}}
 @media(max-width:370px){.brand>div:last-child>span{display:none}.theme-btn{padding:7px 6px}.hero-art{display:none}.dashboard-hero{min-height:250px}.scope-btn{padding:8px 6px}.scope-btn span{width:19px}.review-ratings .button{padding:11px 7px;font-size:11px}}
+
+/* WordJB - Center Login and Signup */
+#authGate.auth-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 96px);
+  padding: 24px 0 64px;
+}
+
+#authGate .intro-side {
+  display: none;
+}
+
+#authGate .auth-card {
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+  justify-self: auto;
+}
+
+@media (max-width: 680px) {
+  #authGate.auth-layout {
+    min-height: calc(100dvh - 84px);
+    padding: 20px 0 40px;
+  }
+}
