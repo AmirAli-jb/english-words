@@ -74,7 +74,7 @@
         <div class="stats" aria-label="Vocabulary overview">
           <div class="stat surface"><div class="stat-heading"><span>Saved words</span><span class="stat-icon">◫</span></div><strong id="statTotal">0</strong><small>Your growing collection</small></div>
           <div class="stat surface"><div class="stat-heading"><span>Due to review</span><span class="stat-icon">◷</span></div><strong id="statDue">0</strong><small>Words waiting for you</small></div>
-          <div class="stat surface"><div class="stat-heading"><span>Mastered words</span><span class="stat-icon">✦</span></div><strong id="statMastered">0</strong><small>Score of 70 or more</small></div>
+          <div class="stat surface"><div class="stat-heading"><span>Mastered words</span><span class="stat-icon">✦</span></div><strong id="statMastered">0</strong><small>Words you've fully learned</small></div>
           <div class="stat surface"><div class="stat-heading"><span>Correct reviews</span><span class="stat-icon">✓</span></div><strong id="statCorrect">0</strong><small>Every effort adds up</small></div>
         </div>
 
@@ -96,18 +96,27 @@
         </section>
 
         <section class="workspace surface hidden" id="viewReview">
-          <div class="section-heading"><div><span class="section-kicker">A LITTLE PRACTICE EVERY DAY</span><h2>Review your vocabulary</h2><p>Choose the schedule you'd like to practice.</p></div><div class="heading-symbol">◎</div></div>
-          <div class="review-scopes" role="group" aria-label="Review schedule">
-            <button type="button" data-scope="all" class="scope-btn active">All due <span id="allDueCount">0</span></button>
-            <button type="button" data-scope="daily" class="scope-btn">Daily <span id="dailyDueCount">0</span></button>
-            <button type="button" data-scope="weekly" class="scope-btn">Weekly <span id="weeklyDueCount">0</span></button>
-            <button type="button" data-scope="monthly" class="scope-btn">Monthly <span id="monthlyDueCount">0</span></button>
+          <div class="section-heading"><div><span class="section-kicker">A LITTLE PRACTICE EVERY DAY</span><h2>Review your vocabulary</h2><p>Review your words when they are due. WordJB manages your schedule automatically.</p></div><div class="heading-symbol">◎</div></div>
+          
+          <div class="review-scopes" role="group" aria-label="Review">
+            <button type="button" data-scope="all" class="scope-btn active">
+              Review now <span id="allDueCount">0</span>
+            </button>
+
+            <span id="dailyDueCount" hidden>0</span>
+            <span id="weeklyDueCount" hidden>0</span>
+            <span id="monthlyDueCount" hidden>0</span>
           </div>
+
           <div id="reviewEmpty" class="empty-state"><div class="empty-symbol">✦</div><h3>You're all caught up!</h3><p>Words on this schedule will appear when it's time to review.</p><button class="button soft" type="button" id="emptyAdd">Add a word →</button></div>
           <div id="reviewCardArea" class="hidden"><div class="review-topline"><span id="reviewProgress">Card 1 of 1</span><span id="reviewScore">Mastery: 0 / 100</span></div>
             <button type="button" id="flashcard" class="flashcard" aria-label="Reveal flashcard answer"><span id="cardSide" class="card-side">ENGLISH</span><strong id="cardTerm">word</strong><span id="cardMeaning" class="card-meaning hidden"></span><span id="cardExample" class="card-example hidden"></span><span id="revealHint" class="reveal-hint">Tap anywhere to reveal the meaning ↗</span></button>
-            <div id="reviewRatings" class="review-ratings hidden"><button type="button" id="forgotButton" class="button wrong">✕ Forgot it</button><button type="button" id="correctButton" class="button correct">✓ Got it right</button></div>
-            <p class="review-explainer">Correct: +12 mastery points · Forgot: −10 points. Your next review date adjusts automatically.</p>
+            <div id="reviewRatings" class="review-ratings hidden"><button type="button" id="forgotButton" class="button wrong">✕ Forgot it</button><button type="button" id="correctButton" class="button correct">✓ Got it right</button></div>  
+            <p class="review-explainer">
+              Remember correctly to improve your mastery.
+              Forgotten words will return for more practice.
+            </p>
+
           </div>
         </section>
 
