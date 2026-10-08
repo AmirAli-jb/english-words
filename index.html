@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0c1b2d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="WordJB">
+  <meta name="description" content="Your private English vocabulary notebook with daily, weekly and monthly spaced reviews.">
+  <title>WordJB · My English Words</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./config.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body data-theme="green">
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
+  <div class="container">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark" aria-hidden="true">W<span>✦</span></div><div><strong>WordJB</strong><span>English, one word at a time</span></div></div>
+      <div class="topbar-actions">
+        <div class="theme-options" role="group" aria-label="Choose color theme">
+          <button type="button" class="theme-btn" data-theme-choice="green" aria-label="Green theme" title="Green"><span class="swatch green"></span><span class="theme-label">Green</span></button>
+          <button type="button" class="theme-btn" data-theme-choice="blue" aria-label="Blue theme" title="Blue"><span class="swatch blue"></span><span class="theme-label">Blue</span></button>
+          <button type="button" class="theme-btn" data-theme-choice="navy" aria-label="Navy theme" title="Navy"><span class="swatch navy"></span><span class="theme-label">Navy</span></button>
+        </div>
+        <span class="profile-pill hidden" id="profileBadge"></span>
+      </div>
+    </header>
+
+    <main>
+      <section id="authGate" class="auth-layout" aria-label="Welcome">
+        <div class="intro-side">
+          <div class="eyebrow"><span class="eyebrow-dot"></span> YOUR PERSONAL WORD SPACE</div>
+          <h1>Make new words <em>stick.</em></h1>
+          <p class="intro-copy">Spot a word in a video. Save it in seconds. Remember it with easy, scheduled reviews.</p>
+          <div class="benefits"><div><span>✳</span> Daily, weekly &amp; monthly reviews</div><div><span>✳</span> A mastery score for every word</div><div><span>✳</span> Your own private vocabulary space</div></div>
+          <div class="mini-preview" aria-label="Example flashcard"><div class="mini-overline">TODAY'S WORD</div><strong>serendipity</strong><div class="mini-translation">Finding something good without looking for it.</div><div class="mini-bottom"><span>✦ Keep discovering</span><span class="mini-score">85 / 100</span></div></div>
+        </div>
+        <div class="auth-card surface">
+          <div class="auth-tabs" role="tablist" aria-label="Authentication">
+            <button type="button" id="loginTab" class="auth-tab active" role="tab" aria-selected="true">Sign in</button>
+            <button type="button" id="registerTab" class="auth-tab" role="tab" aria-selected="false">Create account</button>
+          </div>
+          <div id="cloudSetupNotice" class="setup-notice hidden"><strong>Cloud setup is not connected yet.</strong><p>You can explore the demo now. To enable real accounts, follow the included Supabase setup guide.</p></div>
+          <form id="loginForm" class="auth-form">
+            <h2>Welcome back <span>👋</span></h2><p>Pick up right where you left off.</p>
+            <label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="email" placeholder="you@example.com" required>
+            <label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Your password" required>
+            <button type="submit" class="button primary full auth-submit">Sign in <span>→</span></button>
+          </form>
+          <form id="signupForm" class="auth-form hidden">
+            <h2>Start your word journey <span>✦</span></h2><p>Create your own space to grow your English.</p>
+            <label for="signupUsername">Username</label><input id="signupUsername" name="username" autocomplete="username" minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" title="3–20 letters, digits or underscores" placeholder="e.g. language_learner" required>
+            <label for="signupEmail">Email</label><input id="signupEmail" type="email" autocomplete="email" placeholder="you@example.com" required>
+            <label for="signupPassword">Password</label><input id="signupPassword" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required>
+            <button type="submit" class="button primary full auth-submit">Create account <span>→</span></button>
+            <p class="tiny">Your email is used for secure sign-in and account confirmation.</p>
+          </form>
+          <div class="auth-divider"><span>or try it first</span></div>
+          <button id="demoButton" type="button" class="button soft full">Try a free demo <span>↗</span></button>
+          <p class="demo-warning">Demo words stay in this browser. They are not attached to an account or synced between devices.</p>
+          <p id="authFeedback" class="feedback hidden" role="status"></p>
+        </div>
+      </section>
+
+      <div id="appShell" class="hidden">
+        <section class="dashboard-hero">
+          <div><div class="eyebrow small"><span class="eyebrow-dot"></span> YOUR LEARNING SPACE</div><h1>Every word<br><em>counts.</em></h1><p id="heroSubtitle">Keep learning, one small review at a time.</p><button type="button" class="button hero-action" id="heroReview">Review your words <span>↗</span></button></div>
+          <div class="hero-art" aria-hidden="true"><div class="hero-circle"><span class="float-star">✦</span><span class="hero-monogram">Aa</span><span class="float-words">learn · repeat · grow</span></div></div>
+        </section>
+
+        <div class="stats" aria-label="Vocabulary overview">
+          <div class="stat surface"><div class="stat-heading"><span>Saved words</span><span class="stat-icon">◫</span></div><strong id="statTotal">0</strong><small>Your growing collection</small></div>
+          <div class="stat surface"><div class="stat-heading"><span>Due to review</span><span class="stat-icon">◷</span></div><strong id="statDue">0</strong><small>Words waiting for you</small></div>
+          <div class="stat surface"><div class="stat-heading"><span>Mastered words</span><span class="stat-icon">✦</span></div><strong id="statMastered">0</strong><small>Score of 70 or more</small></div>
+          <div class="stat surface"><div class="stat-heading"><span>Correct reviews</span><span class="stat-icon">✓</span></div><strong id="statCorrect">0</strong><small>Every effort adds up</small></div>
+        </div>
+
+        <nav class="main-nav" aria-label="Main sections">
+          <button type="button" class="nav-btn active" data-view="add"><span>＋</span> Add word</button>
+          <button type="button" class="nav-btn" data-view="review"><span>◷</span> Review</button>
+          <button type="button" class="nav-btn" data-view="library"><span>▤</span> My words</button>
+          <button type="button" class="nav-btn" data-view="settings"><span>⚙</span> Settings</button>
+        </nav>
+
+        <section class="workspace surface" id="viewAdd">
+          <div class="section-heading"><div><span class="section-kicker">BUILD YOUR COLLECTION</span><h2 id="wordFormTitle">Save a new word</h2><p>Found something interesting? Make it yours.</p></div><div class="heading-symbol">✎</div></div>
+          <form id="wordForm">
+            <div class="field-grid"><div><label for="term">English word or phrase <span>*</span></label><input id="term" maxlength="120" required autocomplete="off" placeholder="e.g. figure out"></div><div><label for="frequency">Review schedule</label><select id="frequency"><option value="daily">☀ Daily</option><option value="weekly">▦ Weekly</option><option value="monthly">◴ Monthly</option></select></div></div>
+            <label for="meaning">Meaning (English or Persian) <span>*</span></label><textarea id="meaning" maxlength="800" required placeholder="e.g. فهمیدن / to understand"></textarea>
+            <label for="example">Example sentence <span class="optional">optional</span></label><textarea id="example" maxlength="800" placeholder="I finally figured out the answer."></textarea>
+            <div class="form-bottom"><p>Tip: save useful expressions too, not just single words.</p><div class="form-actions"><button type="button" id="cancelEdit" class="button soft hidden">Cancel edit</button><button type="submit" id="saveWord" class="button primary">Save word <span>→</span></button></div></div>
+          </form>
+        </section>
+
+        <section class="workspace surface hidden" id="viewReview">
+          <div class="section-heading"><div><span class="section-kicker">A LITTLE PRACTICE EVERY DAY</span><h2>Review your vocabulary</h2><p>Choose the schedule you'd like to practice.</p></div><div class="heading-symbol">◎</div></div>
+          <div class="review-scopes" role="group" aria-label="Review schedule">
+            <button type="button" data-scope="all" class="scope-btn active">All due <span id="allDueCount">0</span></button>
+            <button type="button" data-scope="daily" class="scope-btn">Daily <span id="dailyDueCount">0</span></button>
+            <button type="button" data-scope="weekly" class="scope-btn">Weekly <span id="weeklyDueCount">0</span></button>
+            <button type="button" data-scope="monthly" class="scope-btn">Monthly <span id="monthlyDueCount">0</span></button>
+          </div>
+          <div id="reviewEmpty" class="empty-state"><div class="empty-symbol">✦</div><h3>You're all caught up!</h3><p>Words on this schedule will appear when it's time to review.</p><button class="button soft" type="button" id="emptyAdd">Add a word →</button></div>
+          <div id="reviewCardArea" class="hidden"><div class="review-topline"><span id="reviewProgress">Card 1 of 1</span><span id="reviewScore">Mastery: 0 / 100</span></div>
+            <button type="button" id="flashcard" class="flashcard" aria-label="Reveal flashcard answer"><span id="cardSide" class="card-side">ENGLISH</span><strong id="cardTerm">word</strong><span id="cardMeaning" class="card-meaning hidden"></span><span id="cardExample" class="card-example hidden"></span><span id="revealHint" class="reveal-hint">Tap anywhere to reveal the meaning ↗</span></button>
+            <div id="reviewRatings" class="review-ratings hidden"><button type="button" id="forgotButton" class="button wrong">✕ Forgot it</button><button type="button" id="correctButton" class="button correct">✓ Got it right</button></div>
+            <p class="review-explainer">Correct: +12 mastery points · Forgot: −10 points. Your next review date adjusts automatically.</p>
+          </div>
+        </section>
+
+        <section class="workspace surface hidden" id="viewLibrary"><div class="section-heading"><div><span class="section-kicker">YOUR PERSONAL DICTIONARY</span><h2>All your words</h2><p>Every phrase you saved, together in one place.</p></div><div class="heading-symbol">▤</div></div>
+          <div class="library-tools"><input id="search" type="search" placeholder="Search words or meanings..." aria-label="Search words"><select id="libraryFrequency" aria-label="Filter by frequency"><option value="all">All schedules</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></div>
+          <div id="wordList" class="word-list"></div>
+        </section>
+
+        <section class="workspace surface hidden" id="viewSettings"><div class="section-heading"><div><span class="section-kicker">MAKE IT YOURS</span><h2>Settings &amp; backups</h2><p>Personalize your learning experience.</p></div><div class="heading-symbol">⚙</div></div>
+          <div class="setting-row"><div><strong>Account</strong><p id="accountInfo">Local demo account</p></div><button class="button soft" type="button" id="signOut">Leave demo</button></div>
+          <div class="setting-row"><div><strong>Color theme</strong><p>Choose Green, Blue or Navy using the buttons at the top.</p></div><div class="theme-preview-dots" aria-hidden="true"><i class="green"></i><i class="blue"></i><i class="navy"></i></div></div>
+          <div class="setting-row"><div><strong>Export vocabulary</strong><p>Download a JSON backup of your words and review scores.</p></div><button type="button" id="exportBackup" class="button soft">↓ Export</button></div>
+          <div class="setting-row"><div><strong>Import vocabulary</strong><p>Restore a backup, including exports from the previous version.</p></div><button type="button" id="importBackup" class="button soft">↑ Import</button><input id="importFile" type="file" accept=".json,application/json" class="hidden"></div>
+          <p class="footnote" id="storageNote">Demo mode stores words in this browser. Export a backup before clearing Safari data.</p>
+        </section>
+        <footer>Made for curious minds <span>✦</span> One word at a time</footer>
+      </div>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
