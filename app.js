@@ -5,7 +5,7 @@
   const DAY_MS = 24 * 60 * 60 * 1000;
   const DEMO_KEY = 'wordjb-demo-v2';
   const THEME_KEY = 'wordjb-theme-v2';
-  const THEMES = ['green', 'blue', 'navy','green-dark'];
+  const THEMES = ['green', 'blue', 'navy'];
   const CADENCES = {daily: 1, weekly: 7, monthly: 30};
   const $ = id => document.getElementById(id);
   const state = {mode:'none', user:null, client:null, words:[], editingId:null, view:'add', scope:'all', queue:[], activeId:null, revealed:false, reviewed:0, busy:false, request:0, theme:'green'};

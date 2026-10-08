@@ -8,10 +8,10 @@
   <meta name="apple-mobile-web-app-title" content="WordJB">
   <meta name="description" content="Your private English vocabulary notebook with daily, weekly and monthly spaced reviews.">
   <title>WordJB · My English Words</title>
-  <link rel="stylesheet" href="./styles.css?v=4">
+  <link rel="stylesheet" href="./styles.css">
   <script src="./config.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
-  <script src="./app.js?v=4" defer></script>
+  <script src="./app.js" defer></script>
 </head>
 <body data-theme="green">
   <div class="ambient ambient-a" aria-hidden="true"></div>
@@ -21,11 +21,9 @@
       <div class="brand"><div class="brand-mark" aria-hidden="true">W<span>✦</span></div><div><strong>WordJB</strong><span>English, one word at a time</span></div></div>
       <div class="topbar-actions">
         <div class="theme-options" role="group" aria-label="Choose color theme">
-          <button type="button" class="-btn" data--choice="green" aria-label="Green " title="Green"><span class="swatch green"></span><span class="-label">Green</span></button>
-          <button type="button" class="-btn" data--choice="blue" aria-label="Blue " title="Blue"><span class="swatch blue"></span><span class="-label">Blue</span></button>
-          <button type="button" class="-btn" data--choice="navy" aria-label="Navy theme" title="Navy"><span class="swatch navy"></span><span class="theme-label">Navy</span></button>   
-          <button type="button" class="theme-btn"  data-theme-choice="green-dark" aria-label="Dark Green theme" title="Dark Green"><span class="swatch green-dark"></span><span class="theme-label">Dark Green</span></button>
-
+          <button type="button" class="theme-btn" data-theme-choice="green" aria-label="Green theme" title="Green"><span class="swatch green"></span><span class="theme-label">Green</span></button>
+          <button type="button" class="theme-btn" data-theme-choice="blue" aria-label="Blue theme" title="Blue"><span class="swatch blue"></span><span class="theme-label">Blue</span></button>
+          <button type="button" class="theme-btn" data-theme-choice="navy" aria-label="Navy theme" title="Navy"><span class="swatch navy"></span><span class="theme-label">Navy</span></button>
         </div>
         <span class="profile-pill hidden" id="profileBadge"></span>
       </div>
@@ -130,7 +128,7 @@
 
         <section class="workspace surface hidden" id="viewSettings"><div class="section-heading"><div><span class="section-kicker">MAKE IT YOURS</span><h2>Settings &amp; backups</h2><p>Personalize your learning experience.</p></div><div class="heading-symbol">⚙</div></div>
           <div class="setting-row"><div><strong>Account</strong><p id="accountInfo">Local demo account</p></div><button class="button soft" type="button" id="signOut">Leave demo</button></div>
-          <div class="setting-row"><div><strong>Color theme</strong><p>Choose Light Green, Light Blue, Dark Navy or Dark Green.</p></div><div class="theme-preview-dots" aria-hidden="true"><i class="green"></i><i class="blue"></i><i class="navy"></i><i class="green-dark"></i></div></div>
+          <div class="setting-row"><div><strong>Color theme</strong><p>Choose Green, Blue or Navy using the buttons at the top.</p></div><div class="theme-preview-dots" aria-hidden="true"><i class="green"></i><i class="blue"></i><i class="navy"></i></div></div>
           <div class="setting-row"><div><strong>Export vocabulary</strong><p>Download a JSON backup of your words and review scores.</p></div><button type="button" id="exportBackup" class="button soft">↓ Export</button></div>
           <div class="setting-row"><div><strong>Import vocabulary</strong><p>Restore a backup, including exports from the previous version.</p></div><button type="button" id="importBackup" class="button soft">↑ Import</button><input id="importFile" type="file" accept=".json,application/json" class="hidden"></div>
           <p class="footnote" id="storageNote">Demo mode stores words in this browser. Export a backup before clearing Safari data.</p>
