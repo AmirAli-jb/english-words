@@ -35,7 +35,7 @@
           <div class="eyebrow"><span class="eyebrow-dot"></span> YOUR PERSONAL WORD SPACE</div>
           <h1>Make new words <em>stick.</em></h1>
           <p class="intro-copy">Spot a word in a video. Save it in seconds. Remember it with easy, scheduled reviews.</p>
-          <div class="benefits"><div><span>✳</span> Daily, weekly &amp; monthly reviews</div><div><span>✳</span> A mastery score for every word</div><div><span>✳</span> Your own private vocabulary space</div></div>
+          <div class="benefits"><div><span>✳</span>Smart spaced repetition</div><div><span>✳</span> A mastery score for every word</div><div><span>✳</span> Your own private vocabulary space</div></div>
           <div class="mini-preview" aria-label="Example flashcard"><div class="mini-overline">TODAY'S WORD</div><strong>serendipity</strong><div class="mini-translation">Finding something good without looking for it.</div><div class="mini-bottom"><span>✦ Keep discovering</span><span class="mini-score">85 / 100</span></div></div>
         </div>
         <div class="auth-card surface">
@@ -88,8 +88,8 @@
         <section class="workspace surface" id="viewAdd">
           <div class="section-heading"><div><span class="section-kicker">BUILD YOUR COLLECTION</span><h2 id="wordFormTitle">Save a new word</h2><p>Found something interesting? Make it yours.</p></div><div class="heading-symbol">✎</div></div>
           <form id="wordForm">
-            <div class="field-grid"><div><label for="term">English word or phrase <span>*</span></label><input id="term" maxlength="120" required autocomplete="off" placeholder="e.g. figure out"></div><div><label for="frequency">Review schedule</label><select id="frequency"><option value="daily">☀ Daily</option><option value="weekly">▦ Weekly</option><option value="monthly">◴ Monthly</option></select></div></div>
-            <label for="meaning">Meaning (English or Persian) <span>*</span></label><textarea id="meaning" maxlength="800" required placeholder="e.g. فهمیدن / to understand"></textarea>
+            <div class="field-grid"><div><label for="term">English word or phrase <span>*</span></label><input  id="term"  maxlength="120"  required autocomplete="off" placeholder="e.g. figure out"><input type="hidden" id="frequency" value="daily">
+<label for="meaning">Meaning (English or Persian) <span>*</span></label><textarea id="meaning" maxlength="800" required placeholder="e.g. فهمیدن / to understand"></textarea>
             <label for="example">Example sentence <span class="optional">optional</span></label><textarea id="example" maxlength="800" placeholder="I finally figured out the answer."></textarea>
             <div class="form-bottom"><p>Tip: save useful expressions too, not just single words.</p><div class="form-actions"><button type="button" id="cancelEdit" class="button soft hidden">Cancel edit</button><button type="submit" id="saveWord" class="button primary">Save word <span>→</span></button></div></div>
           </form>
@@ -121,7 +121,8 @@
         </section>
 
         <section class="workspace surface hidden" id="viewLibrary"><div class="section-heading"><div><span class="section-kicker">YOUR PERSONAL DICTIONARY</span><h2>All your words</h2><p>Every phrase you saved, together in one place.</p></div><div class="heading-symbol">▤</div></div>
-          <div class="library-tools"><input id="search" type="search" placeholder="Search words or meanings..." aria-label="Search words"><select id="libraryFrequency" aria-label="Filter by frequency"><option value="all">All schedules</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></div>
+          
+          <div class="library-tools"><input  id="search"  type="search" placeholder="Search words or meanings..." aria-label="Search words"><input type="hidden" id="libraryFrequency" value="all"></div>
           <div id="wordList" class="word-list"></div>
         </section>
 
