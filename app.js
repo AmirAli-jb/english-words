@@ -134,11 +134,11 @@
     for(const frequency of Object.keys(CADENCES))$(frequency+'DueCount').textContent=d.filter(w=>w.frequency===frequency).length;
   }
   function setView(view){
-    if(!['add','review','l','settings'].includes(view))return;
+    if(!['add','review','library','settings'].includes(view))return;
     state.view=view;
-    for(const v of ['add','review','l','settings'])$('view'+v.charAt(0).toUpperCase()+v.slice(1)).classList.toggle('hidden',v!==view);
+    for(const v of ['add','review','library','settings'])$('view'+v.charAt(0).toUpperCase()+v.slice(1)).classList.toggle('hidden',v!==view);
     document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
-    if(view==='review')startReview();if(view==='l')();updateStats();
+    if(view==='review')startReview();if(view==='library')renderLibrary();updateStats();
     if(view==='add')$('term').focus({preventScroll:true});
   }
   function resetWordForm(){
