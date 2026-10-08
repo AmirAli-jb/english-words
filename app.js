@@ -26,13 +26,13 @@
   function errorMessage(err){return err && typeof err.message==='string' ? err.message : String(err || 'Something went wrong');}
   function showFeedback(msg){const el=$('authFeedback');el.textContent=msg;el.classList.remove('hidden');}
   function setBusy(flag){state.busy=flag;document.querySelectorAll('button[type="submit"],#correctButton,#forgotButton').forEach(b=>b.disabled=flag);}
-  function toDb(w){return {id:w.id,user_id:state.user.id,term:w.term,meaning:w.meaning,example:w.example,frequency:w.frequency,score:w.score,correct_count:w.correct_count,incorrect_count:w.incorrect_count,streak:w.streak,next_review:w.next_review,last_review:w.last_review,created_at:w.created_at,updated_at:nowIso()};}
+  function toDb(w){return {id:w.id,user_id:state.user.id,term:w.term,meaning:w.meaning,example:w.example,frequency:w.frequency,score:w.score,review_step:w.review_step ?? 0,correct_count:w.correct_count,incorrect_count:w.incorrect_count,streak:w.streak,next_review:w.next_review,last_review:w.last_review,created_at:w.created_at,updated_at:nowIso()};}
   function normalize(input){
     if(!input || typeof input !== 'object') return null;
     if(!str(input.term,120)||!str(input.meaning,800))return null;
     const stamp = v => {const date=new Date(v);return Number.isFinite(date.getTime())?date.toISOString():nowIso();};
     const num = (v,min,max) => Number.isFinite(v)?Math.max(min,Math.min(max,Math.floor(v))):0;
-    return {id:typeof input.id==='string' && /^[a-f\d]{8}-[a-f\d-]{27,}$/i.test(input.id)?input.id:uid(),term:str(input.term,120),meaning:str(input.meaning),example:str(input.example,800),frequency:isCadence(input.frequency)?input.frequency:'daily',score:num(input.score ?? ((input.reps || 0)*12),0,100),correct_count:num(input.correct_count ?? input.reps,0,999999),incorrect_count:num(input.incorrect_count,0,999999),streak:num(input.streak,0,99999),next_review:stamp(input.next_review ?? input.due ?? Date.now()),last_review:input.last_review?stamp(input.last_review):null,created_at:stamp(input.created_at ?? input.created ?? Date.now()),updated_at:stamp(input.updated_at ?? Date.now())};
+    return {id:typeof input.id==='string' && /^[a-f\d]{8}-[a-f\d-]{27,}$/i.test(input.id)?input.id:uid(),term:str(input.term,120),meaning:str(input.meaning),example:str(input.example,800),frequency:isCadence(input.frequency)?input.frequency:'daily',score:num(input.score ?? ((input.reps || 0)*12),0,100),review_step:num(input.review_step ?? 0,0,7),correct_count:num(input.correct_count ?? input.reps,0,999999),incorrect_count:num(input.incorrect_count,0,999999),streak:num(input.streak,0,99999),next_review:stamp(input.next_review ?? input.due ?? Date.now()),last_review:input.last_review?stamp(input.last_review):null,created_at:stamp(input.created_at ?? input.created ?? Date.now()),updated_at:stamp(input.updated_at ?? Date.now())};
   }
   function loadDemo(){
     try{let data=JSON.parse(localStorage.getItem(DEMO_KEY)||localStorage.getItem('wordnest-demo-v2')||'[]');return Array.isArray(data)?data.map(normalize).filter(Boolean):[];}
