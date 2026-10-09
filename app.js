@@ -141,206 +141,13 @@
     if(view==='review')startReview();if(view==='library')renderLibrary();updateStats();
     if(view==='add')$('term').focus({preventScroll:true});
   }
-
-   
-/* WordJB - Persian Meaning Suggestions */
-   
-   let meaningLookupVersion = 0;
-   
-   const OPENJAM_WORDS =
-     'https://openjam.amirj4m.com/v1/words/';
-   
-   function appendMeaning(value) {
-     const text = value.trim();
-     const field = $('meaning');
-   
-     if (!text) return false;
-   
-     const original = field.value.trim();
-   
-     const existing = original
-       .split(/[،;\n]/)
-       .map(s => s.trim())
-       .filter(Boolean);
-   
-     if (existing.includes(text)) return true;
-   
-     const next = original
-       ? `${original}، ${text}`
-       : text;
-   
-     if (next.length > 800) {
-       notify('Meaning is too long.');
-       return false;
-     }
-   
-     field.value = next;
-     return true;
-   }
-   
-   function addSelectedMeanings() {
-     const boxes = $('meaningSuggestions')
-       .querySelectorAll('input[type="checkbox"]:checked');
-   
-     let count = 0;
-   
-     for (const box of boxes) {
-       if (appendMeaning(box.value)) {
-         box.checked = false;
-         count++;
-       }
-     }
-   
-     if (count) {
-       $('meaningLookupStatus').textContent =
-         'Meanings added. You can edit them below.';
-     }
-   }
-   
-   function addCustomMeaning() {
-     const field = $('customMeaning');
-     const value = field.value.trim();
-   
-     if (!value) return;
-   
-     if (appendMeaning(value)) {
-       field.value = '';
-   
-       $('meaningLookupStatus').textContent =
-         'Your meaning has been added.';
-     }
-   }
-   
-   function clearMeaningSuggestions() {
-     meaningLookupVersion++;
-   
-     $('meaningSuggestions').replaceChildren();
-     $('meaningSuggestions').classList.add('hidden');
-   
-     $('meaningLookupStatus').textContent = '';
-     $('suggestMeanings').disabled = false;
-   }
-   
-   async function fetchMeaningSuggestions() {
-     const term = $('term').value.trim();
-   
-     if (!term) {
-       $('meaningLookupStatus').textContent =
-         'Enter an English word first.';
-       return;
-     }
-   
-     const version = ++meaningLookupVersion;
-     const container = $('meaningSuggestions');
-   
-     container.replaceChildren();
-     container.classList.add('hidden');
-   
-     $('meaningLookupStatus').textContent =
-       'Searching for Persian meanings...';
-   
-     $('suggestMeanings').disabled = true;
-   
-     try {
-       const url = OPENJAM_WORDS +
-         encodeURIComponent(term.toLowerCase());
-   
-       const response = await fetch(url, {
-         headers: { Accept: 'application/json' }
-       });
-   
-       if (
-         version !== meaningLookupVersion ||
-         $('term').value.trim() !== term
-       ) return;
-   
-       if (response.status === 404) {
-         $('meaningLookupStatus').textContent =
-           'No suggestions found. Add your own meaning.';
-         return;
-       }
-   
-       if (!response.ok) {
-         throw new Error(`HTTP ${response.status}`);
-       }
-   
-       const data = await response.json();
-   
-       if (
-         version !== meaningLookupVersion ||
-         $('term').value.trim() !== term
-       ) return;
-   
-       const senses = Array.isArray(data.senses)
-         ? data.senses
-         : [];
-   
-       const translations = senses.flatMap(s =>
-         Array.isArray(s.translations)
-           ? s.translations
-           : []
-       );
-   
-       const meanings = [...new Set(
-         translations
-           .filter(t =>
-             t &&
-             t.language_code === 'fa' &&
-             typeof t.meaning === 'string'
-           )
-           .map(t => t.meaning.trim())
-           .filter(Boolean)
-       )].slice(0, 12);
-   
-       if (!meanings.length) {
-         $('meaningLookupStatus').textContent =
-           'No Persian meanings found. Add yours below.';
-         return;
-       }
-   
-       for (const meaning of meanings) {
-         const label = document.createElement('label');
-         label.className = 'meaning-suggestion';
-   
-         const checkbox = document.createElement('input');
-         checkbox.type = 'checkbox';
-         checkbox.value = meaning;
-   
-         const text = document.createElement('span');
-         text.textContent = meaning;
-   
-         label.append(checkbox, text);
-         container.append(label);
-       }
-   
-       container.classList.remove('hidden');
-   
-       $('meaningLookupStatus').textContent =
-         `${meanings.length} suggestions found.`;
-     } catch (error) {
-       if (version === meaningLookupVersion) {
-         $('meaningLookupStatus').textContent =
-           'Dictionary unavailable. Add a meaning manually.';
-       }
-     } finally {
-       if (version === meaningLookupVersion) {
-         $('suggestMeanings').disabled = false;
-       }
-     }
-   }
-
   function resetWordForm(){
-    state.editingId=null;$('wordForm').reset();$('wordFormTitle').textContent='Save a new word';$('saveWord').innerHTML='Save word <span>→</span>';$('cancelEdit').classList.add('hidden');clearMeaningSuggestions();
+    state.editingId=null;$('wordForm').reset();$('wordFormTitle').textContent='Save a new word';$('saveWord').innerHTML='Save word <span>→</span>';$('cancelEdit').classList.add('hidden');
   }
   async function saveWord(e){
     e.preventDefault();if(state.busy)return;
-    addSelectedMeanings();
-    addCustomMeaning();
     const term=$('term').value.trim(),meaning=$('meaning').value.trim(),example=$('example').value.trim(),frequency=$('frequency').value;
-    if (!term || !meaning || !isCadence(frequency)) {
-      notify('Please enter a word and at least one meaning.');
-      return;
-    }
+    if(!term||!meaning||!isCadence(frequency))return;
     const duplicate=state.words.find(w=>w.id!==state.editingId&&w.term.toLowerCase()===term.toLowerCase());
     if(duplicate && !window.confirm(`You already have “${term}”. Save another card anyway?`))return;
     const original=state.words.find(w=>w.id===state.editingId);
@@ -365,7 +172,7 @@
   }
   function beginEdit(id){
     const w=state.words.find(item=>item.id===id);if(!w)return;
-    state.editingId=w.id;setView('add');$('wordFormTitle').textContent='Edit your word';clearMeaningSuggestions();$('term').value=w.term;$('meaning').value=w.meaning;$('example').value=w.example;$('frequency').value=w.frequency;
+    state.editingId=w.id;setView('add');$('wordFormTitle').textContent='Edit your word';$('term').value=w.term;$('meaning').value=w.meaning;$('example').value=w.example;$('frequency').value=w.frequency;
     $('saveWord').innerHTML='Update word <span>→</span>';$('cancelEdit').classList.remove('hidden');$('term').focus();
     $('viewAdd').scrollIntoView({behavior:'smooth',block:'start'});
   }
@@ -539,23 +346,6 @@ async function rate(correct) {
     $('flashcard').addEventListener('click',reveal);$('forgotButton').addEventListener('click',()=>rate(false));$('correctButton').addEventListener('click',()=>rate(true));
     $('exportBackup').addEventListener('click',exportBackup);$('importBackup').addEventListener('click',()=>$('importFile').click());$('importFile').addEventListener('change',importBackup);
     $('signOut').addEventListener('click',exitApp);
-    
-    $('suggestMeanings').addEventListener(
-        'click', fetchMeaningSuggestions
-      );
-      
-    $('addSelectedMeanings').addEventListener(
-        'click', addSelectedMeanings
-      );
-      
-    $('addCustomMeaning').addEventListener(
-        'click', addCustomMeaning
-      );
-      
-    $('term').addEventListener(
-        'input', clearMeaningSuggestions
-      );
-         
   }
   async function boot(){
     applyTheme((()=>{try{return (localStorage.getItem(THEME_KEY)||localStorage.getItem('wordnest-theme-v2'))}catch(e){return 'green'}})()||'green',false);

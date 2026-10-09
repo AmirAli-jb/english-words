@@ -89,69 +89,7 @@
           <div class="section-heading"><div><span class="section-kicker">BUILD YOUR COLLECTION</span><h2 id="wordFormTitle">Save a new word</h2><p>Found something interesting? Make it yours.</p></div><div class="heading-symbol">✎</div></div>
           <form id="wordForm">
             <div class="field-grid"><div><label for="term">English word or phrase <span>*</span></label><input  id="term"  maxlength="120"  required autocomplete="off" placeholder="e.g. figure out"><input type="hidden" id="frequency" value="daily">
-
-            <!-- Smart Persian Meanings -->
-            <div class="meaning-assistant">
-            
-              <div class="meaning-assistant-top">
-                <strong>Persian meaning suggestions</strong>
-            
-                <button
-                  type="button"
-                  id="suggestMeanings"
-                  class="button soft"
-                >
-                  ✨ Suggest meanings
-                </button>
-              </div>
-            
-              <p
-                id="meaningLookupStatus"
-                class="meaning-status"
-                role="status"
-                aria-live="polite"
-              ></p>
-            
-              <div
-                id="meaningSuggestions"
-                class="meaning-suggestions hidden"
-              ></div>
-            
-              <button
-                type="button"
-                id="addSelectedMeanings"
-                class="button soft"
-              >
-                + Add selected meanings
-              </button>
-            
-              <label for="customMeaning">
-                Or add your own meaning
-              </label>
-            
-              <div class="custom-meaning-row">
-                <input
-                  type="text"
-                  id="customMeaning"
-                  maxlength="200"
-                  dir="auto"
-                  placeholder="your meaning "
-                >
-            
-                <button
-                  type="button"
-                  id="addCustomMeaning"
-                  class="button soft"
-                >
-                  + Add
-                </button>
-              </div>
-            
-            </div>
-            <!-- End Smart Persian Meanings -->
-
-
-<label for="meaning">Meaning (English or Persian) <span>*</span></label><textarea id="meaning" maxlength="800"  placeholder="e.g.  to understand"></textarea>
+<label for="meaning">Meaning (English or Persian) <span>*</span></label><textarea id="meaning" maxlength="800" required placeholder="e.g. فهمیدن / to understand"></textarea>
             <label for="example">Example sentence <span class="optional">optional</span></label><textarea id="example" maxlength="800" placeholder="I finally figured out the answer."></textarea>
             <div class="form-bottom"><p>Tip: save useful expressions too, not just single words.</p><div class="form-actions"><button type="button" id="cancelEdit" class="button soft hidden">Cancel edit</button><button type="submit" id="saveWord" class="button primary">Save word <span>→</span></button></div></div>
           </form>
