@@ -29,3 +29,103 @@
     padding: 20px 0 40px;
   }
 }
+
+/* WordJB Smart Persian Meanings */
+
+.meaning-assistant {
+  margin: 22px 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--accent-soft);
+}
+
+.meaning-assistant-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.meaning-assistant-top strong {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.meaning-status {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 12px 0;
+  line-height: 1.6;
+}
+
+.meaning-suggestions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin: 12px 0;
+}
+
+.meaning-suggestion {
+  display: flex !important;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  padding: 11px !important;
+  margin: 0 !important;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500 !important;
+  line-height: 1.7;
+}
+
+.meaning-suggestion input {
+  width: 17px !important;
+  height: 17px;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+}
+
+.meaning-suggestion span {
+  direction: rtl;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.meaning-suggestion:has(input:checked) {
+  border-color: var(--accent);
+}
+
+#addSelectedMeanings {
+  margin: 4px 0 12px;
+}
+
+.custom-meaning-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+#customMeaning {
+  min-width: 0;
+}
+
+@media (max-width: 600px) {
+  .meaning-suggestions {
+    grid-template-columns: 1fr;
+  }
+
+  .custom-meaning-row {
+    grid-template-columns: 1fr;
+  }
+
+  .meaning-assistant {
+    padding: 14px;
+  }
+}
